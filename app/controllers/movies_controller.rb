@@ -17,7 +17,14 @@ class MoviesController < ApplicationController
     when 'release_date'
       @release_header = 'hilite'
     end
-   @movies = Movie.all.order(params[:sort])
+    
+    @all_ratings = Movie.all_ratings
+    @selected_ratings = params[:ratings] || {}
+    
+    if @selected_ratings == {}
+      @selected_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
+    end
+   @movies = Movie.where(rating: @selected_ratings.keys).order(params[:sort])
   end
 
   def new
